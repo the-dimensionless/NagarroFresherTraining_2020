@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script async defer src="script.js"></script>
+</head>
+
+<body onload=fetchAll()>
+    <h1>Todo List Manager</h1>
+    
+    <div id = "taskForm">
+        <fieldset>
+            <legend>Add a Task</legend>
+            <input type="text" name="task" id="id" placeholder="Enter Task Id" class="formInput" required>
+            <input type="text" name="title" id="title" placeholder="Enter Task Title" class="formInput" required>
+            <input type="text" name="description" id="description" placeholder="Enter Task description" class="formInput">
+            <p>Due Date:&nbsp;<input type="date" name="due" id="due" class="formInput"></p>
+
+            <fieldset>
+                <legend>Selecting Priority</legend>
+                <p>
+                <label>Select Priority</label>
+                <select id = "priority" class="formInput">
+                    <option value = "Low">Low</option>
+                    <option value = "Medium" selected>Medium</option>
+                    <option value = "High">High</option>
+                </select>
+                </p>
+            </fieldset>
+
+            <input type="text" id="status" placeholder="status" class="formInput" value="Incomplete" readonly>
+            <button type="submit" id="submit" onclick = addTask()>Add Task</button>
+        </fieldset>
+    </div>
+    
+    <div id = "listOfTasks">
+    <fieldset>
+        <h3>List of Available Tasks</h3>
+        <p>
+            <label>Sort By</label>
+            <select id = "sortingPreference">
+                <option value="date">Due Date(Asc)</option>
+                <option value="priority">Priority (high to low)</option>
+                <option value="status">Completion Status</option>
+            </select>
+        </p>
+        
+        <ul id = "listElement"></ul>
+
+    </fieldset>
+    </div>
+    
+    <script>
+        // Set default value to tomorrow's date
+        const date = new Date()
+        date.setDate(date.getDate() + 1);
+        document.getElementById('due').valueAsDate = date;
+
+        // button = document.getElementById("noteSubmitButton")
+        // button.addEventListener("click", addNote(), true)
+    </script>
+</body>
+</html>

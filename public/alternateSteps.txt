@@ -1,0 +1,68 @@
+async function addTask () {
+   /*  var task = {
+        task: {
+                id: document.getElementById("id").value,
+                title: document.getElementById("title").value,
+                description: document.getElementById("description").value,
+                due: document.getElementById("due").value,
+                priority: document.getElementById("priority").value,
+                status: document.getElementById("status").value
+            }
+        } */
+}
+
+ /* ViewTaskList() in script.js
+ 
+ if (todoElement == null) {
+         todoElement = await fetch("/todoElement.html").then(res=>res.text())
+     }
+     element.innerHTML = todoElement
+     element.addEventListener("click", displayNotes)
+    //  element.addEventListener("click", displayNotes, true)
+     list.appendChild(element)
+     element.querySelector(".title").innerHTML = listOfTasks['id']
+     element.querySelector(".body").innerHTML = listOfTasks['description'] 
+     
+
+    element.innerHTML = todoElement
+    element.addEventListener("click", displayNotes)
+//  element.addEventListener("click", displayNotes, true)
+    list.appendChild(element)
+    element.querySelector(".title").innerHTML = listOfTasks['id']
+    element.querySelector(".body").innerHTML = listOfTasks['description'] 
+
+    */
+
+/*  In script.js
+    async function displayNotes () {
+    thisId = (this.id).trim()
+    res = await fetch(`tasks/${thisId}/notes`, {method: 'GET'})
+    notesArray = await res.json()
+
+    currentTaskID = thisId
+    taskItem = document.getElementById(thisId)
+
+    notesList = taskItem.querySelector(".notes")
+   /*  division = taskItem.querySelector(".notesForm")
+    division.style.display = "block" */
+    // formButton = division.querySelector("#noteSubmitButton")
+    formButton = div2.querySelector("#noteSubmitButton")
+    formButton.addEventListener("click", addNote)
+
+    if (notesArray.length == 0) {
+        console.log("No notes")
+        return
+    } else {
+        notesList.innerHTML = ""
+        await notesArray.forEach(element => {
+        console.log("ading a note with value ",element)
+        displayNote(notesList, element)
+    });
+    }
+}
+
+*/
+
+
+
+
