@@ -6,11 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "node",
+    "express"
+  ],
   "author": "Sumit Kumar Singh",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
     "sqlite3": "^4.1.1"
+  },
+  "engines": {
+    "node": "10.x"
   }
 }
