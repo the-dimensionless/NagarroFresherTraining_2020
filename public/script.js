@@ -269,9 +269,9 @@ async function updateTask() {
     statusByUser = document.getElementById("statusToUpdate").value
 
     currentDetailsOnId = listOfTasks[tID - 1]
-    if (currentTaskID == undefined) {
+    if (currentDetailsOnId == undefined) {
         window.alert("No such TaskId exists. Please enter a valid TaskID")
-        return
+        return false
     }
     // await console.log("current details", currentDetailsOnId)
 

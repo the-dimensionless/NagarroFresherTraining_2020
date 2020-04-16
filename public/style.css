@@ -2,3 +2,12 @@
     padding-left: 23px;
     padding-top: 10px;
 }
+
+ul {
+    list-style-type:none;
+}
+
+.title {
+    font-size: larger;
+    font-weight: 200px;
+}
