@@ -81,7 +81,7 @@ async function displayNotesOnThis(e) {
                 // console.log("ading a note with value ",element)
                 displayNote(notesList, element)
             })
-            addFormNoteViewer(callerTaskId)
+            await addFormNoteViewer(callerTaskId)
         }
         console.log("You are viewing Task Notes")
     }
@@ -109,14 +109,14 @@ async function addFormNoteViewer(callerTaskId) {
 }
 
 async function addNote(e) {
-    noteForm = e.srcElement.parentNode
+    noteFormGet = e.srcElement.parentNode
     taskNode = e.path[5]
     currentTaskID = taskNode.id
     console.log(currentTaskID)
 
     note = {
         /* id: noteForm.querySelector('.noteId').value, */
-        note: noteForm.querySelector('.noteVerbose').value,
+        note: noteFormGet.querySelector('.noteVerbose').value,
         taskId: currentTaskID
     }
 
