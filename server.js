@@ -14,7 +14,7 @@ app.use('/tasks', routingService)
 
 db.sync()
     .then(() => {
-        app.listen(6543)
+        app.listen(port)
     })
     .catch((err) => {
         console.error(err)
