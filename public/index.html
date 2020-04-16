@@ -1,66 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
     <link rel="stylesheet" href="style.css">
     <script async defer src="script.js"></script>
 </head>
 
 <body onload=fetchAll()>
-    <h1>Todo List Manager</h1>
-    
-    <div id = "taskForm">
+    <nav class="navbar navbar-dark bg-secondary">
+        <h1>Todo List Manager</h1>
+    </nav>
+    <br>
+    <div>
+        <button type="button" class="btn btn-outline-dark" onclick=showAddTaskForm()>I want to Add a Task</button>
+        <button type="button" class="btn btn-outline-dark" onclick=showUpdateTaskForm()>I want to Update a Task</button>
+    </div>
+    <br>
+    <div id="AddtaskForm" class="form-group border border-secondary">
         <fieldset>
-            <legend>Add a Task</legend>
-            <input type="text" name="task" id="id" placeholder="Enter Task Id" class="formInput" required>
-            <input type="text" name="title" id="title" placeholder="Enter Task Title" class="formInput" required>
-            <input type="text" name="description" id="description" placeholder="Enter Task description" class="formInput">
-            <p>Due Date:&nbsp;<input type="date" name="due" id="due" class="formInput"></p>
+            <legend class='btn btn-secondary'>Add a Task</legend><br>
+            <input type="text" name="task" id="id" placeholder="Enter Task Id" class="formInput form-control"
+                required><br>
+            <input type="text" name="title" id="title" placeholder="Enter Task Title" class="formInput form-control"
+                required><br>
+            <input type="text" name="description" id="description" placeholder="Enter Task description"
+                class="formInput form-control"><br>
+            <p>Due Date:&nbsp;<input type="date" name="due" id="due" class="formInput form-control"></p>
 
             <fieldset>
-                <legend>Selecting Priority</legend>
                 <p>
-                <label>Select Priority</label>
-                <select id = "priority" class="formInput">
-                    <option value = "Low">Low</option>
-                    <option value = "Medium" selected>Medium</option>
-                    <option value = "High">High</option>
-                </select>
+                    <label>Select Priority</label>
+                    <select id="priority" class="formInput form-control">
+                        <option value="Low">Low</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </p>
+            </fieldset>
+            <label>Status</label>
+            <input type="text" id="status" placeholder="status" class="formInput form-control" value="Incomplete"
+                readonly><br>
+            <button type="submit" id="submit" class="btn btn-success" onclick=addTask()>Add Task</button>
+            <br>
+        </fieldset>
+        <br>
+    </div>
+
+    <div id="UpdatetaskForm" class="form-group border border-secondary">
+        <fieldset>
+            <legend class='btn btn-secondary'>Update Task</legend>
+            <label>Enter Task ID to update</label>
+            <input type="text" name="task" id="idToUpdate" placeholder="Enter Task Id"
+                class="formInput form-control col-3" required><br>
+            <!--  <input type="text" name="title" id="title" placeholder="Task Title" class="form-control col-2" required
+                readonly><br>
+            <input type="text" name="description" id="description" placeholder="Task description"
+                class="formInput form-control col-2" readonly><br> -->
+            <p>Due Date:&nbsp;<input type="date" name="due" id="dueToUpdate" class="formInput form-control col-3"></p>
+
+            <fieldset>
+                <p>
+                    <label>Select Priority</label>
+                    <select id="priorityToUpdate" class="formInput form-control col-3">
+                        <option value="Low">Low</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="High">High</option>
+                    </select>
                 </p>
             </fieldset>
 
-            <input type="text" id="status" placeholder="status" class="formInput" value="Incomplete" readonly>
-            <button type="submit" id="submit" onclick = addTask()>Add Task</button>
+            <label>Status</label>
+            <select id="statusToUpdate" placeholder="status" class="formInput form-control col-3">
+                <option value="Completed">Completed</option>
+                <option value="Incomplete">Incomplete</option>
+            </select><br>
+            <button type="submit" class="btn btn-primary" id="submit" onclick=updateTask()>Update Task</button>
+        </fieldset><br>
+    </div>
+
+    <div id="listOfTasks">
+        <fieldset>
+            <h3>List of Available Tasks</h3>
+            <p>
+                <label>Sort By</label>
+                <!-- <button class="btn btn-outline-info">Apply</button> -->
+                <select id="sortingPreference" class="btn btn-outline-info" onclick=Sort()>
+                    <option value="dateASC">Due Date(Asc)</option>
+                    <option value="dateDESC">Due Date(Desc)</option>
+                    <option value="priority">Priority (high to low)</option>
+                    <option value="status">Completion Status</option>
+                </select>
+            </p>
+
+            <ul id="listElement"></ul>
+
         </fieldset>
     </div>
-    
-    <div id = "listOfTasks">
-    <fieldset>
-        <h3>List of Available Tasks</h3>
-        <p>
-            <label>Sort By</label>
-            <select id = "sortingPreference">
-                <option value="date">Due Date(Asc)</option>
-                <option value="priority">Priority (high to low)</option>
-                <option value="status">Completion Status</option>
-            </select>
-        </p>
-        
-        <ul id = "listElement"></ul>
 
-    </fieldset>
-    </div>
-    
     <script>
         // Set default value to tomorrow's date
         const date = new Date()
         date.setDate(date.getDate() + 1);
         document.getElementById('due').valueAsDate = date;
 
-        // button = document.getElementById("noteSubmitButton")
-        // button.addEventListener("click", addNote(), true)
+        function showAddTaskForm() {
+            document.getElementById("AddtaskForm").style.display = "block"
+            document.getElementById("UpdatetaskForm").style.display = "none"
+        }
+
+        function showUpdateTaskForm() {
+            document.getElementById("AddtaskForm").style.display = "none"
+            document.getElementById("UpdatetaskForm").style.display = "block"
+        }
     </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
 </body>
+
 </html>

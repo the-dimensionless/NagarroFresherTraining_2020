@@ -1,7 +1,7 @@
 const { Router } = require('express')
 
-const {Tasks} = require('../database/db')
-const {Notes} = require('../database/db')
+const { Tasks } = require('../database/db')
+const { Notes } = require('../database/db')
 
 const route = Router()
 
@@ -14,7 +14,7 @@ route.get('/', async (req, res) => {
     } catch (err) {
         console.err(err)
         res.status(404).send("No such data found")
-    } 
+    }
 })
 
 // GET Request for Task with Id
@@ -46,20 +46,20 @@ route.post('/', async (req, res) => {
 
 // PATCH Request for updating a Task with given Id
 route.patch('/:id', async (req, res) => {
-    console.log('Data received')
+    console.log('Data received on id ', req.params.id)
     var task = req.body
     createdTask = await Tasks.update(task, {
         where: {
-            id: req.body.id
+            id: req.params.id
         }
     })
-    res.status(201).send({ success: 'Task Details Updated' })
+    res.status(200).send({ success: 'Task Details Updated' })
 })
 
 // GET Request for Notes under given TaskId
 route.get('/:id/notes', async (req, res) => {
     listOfNotes = await Notes.findAll({
-        where:{
+        where: {
             taskId: req.params.id
         }
     })
@@ -71,8 +71,8 @@ route.get('/:id/notes', async (req, res) => {
 route.post('/:id/notes', async (req, res) => {
 
     createdNote = await Notes.create(req.body)
-    res.status(200).send({success: 'New note created'})
-    
+    res.status(200).send({ success: 'New note created' })
+
 })
 
 module.exports = route

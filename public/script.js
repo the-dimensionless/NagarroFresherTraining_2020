@@ -1,17 +1,239 @@
+var listOfTasks = []
 const list = document.getElementById("listElement")
-var todoElement = null
-var addNoteForm = null
-var currentTaskID = 0
-listOfTodos = []
 
-async function addTask () {
+var currentTaskID = null
+var currenNoteID = null
+notesSection = null
+noteForm = null
+
+notesFetch = fetch("/todoElement.html").then(res => res.text())
+notesFetch.then(j => {
+    notesSection = j
+})
+notesFetch = fetch("/addNoteFormElement.html").then(res => res.text())
+notesFetch.then(j => {
+    noteForm = j
+})
+
+actives = []
+
+async function fetchAll() {
+    document.getElementById("AddtaskForm").style.display = "none"
+    document.getElementById("UpdatetaskForm").style.display = "none"
+
+    res = await fetch('/tasks', { method: 'GET' })
+    data = await res.json()
+    await data.forEach(i => {
+        listOfTasks.push(i)
+    })
+    // console.log("GET Success and then listOfTasks is ", listOfTasks)
+    printViewTasks()
+}
+
+function printViewTasks() {
+    list.innerHTML = ""
+    index = 0
+    listOfTasks.forEach(element => {
+        index = index + 1
+        printView(element, index)
+    });
+}
+
+function printView(i, index) {
+    let task = document.createElement('li')
+    task.setAttribute('id', i['id'])
+    task.classList.add(`e${i.id}`)
+    task.innerHTML = notesSection
+    task.querySelector('.mainContent').addEventListener("click", displayNotesOnThis, true)
+    task.querySelector('.mainContent').id = i.id
+    list.appendChild(task)
+
+    task.querySelector(".orderID").innerHTML = "ID : " + index
+    task.querySelector(".title").innerHTML = "Title : " + i['title']
+    task.querySelector(".description").innerHTML = "Description : " + i['description']
+    task.querySelector(".due").innerHTML = "Due Date : " + i['due'].substr(0, 10)
+    task.querySelector(".priority").innerHTML = "Priority : " + i['priority']
+    task.querySelector(".status").innerHTML = "Status : " + i['status']
+}
+
+async function displayNotesOnThis(e) {
+    callerTaskId = this.id
+    const element = document.querySelector(`.e${callerTaskId}`)
+
+    if (actives.indexOf(callerTaskId) !== -1) {
+        actives = actives.filter(function (i) {
+            return i !== callerTaskId
+        })
+        collapseThis(callerTaskId)
+    } else {
+        actives.push(callerTaskId)
+        notesList = element.querySelector(".notes")
+
+        res = await fetch(`tasks/${this.id}/notes`, { method: 'GET' })
+        notesArray = await res.json()
+        if (notesArray.length == 0) {
+            console.log("No notes")
+            addFormNoteViewer(callerTaskId)
+            return
+        } else {
+            notesList.innerHTML = ""
+            await notesArray.forEach(element => {
+                // console.log("ading a note with value ",element)
+                displayNote(notesList, element)
+            })
+            addFormNoteViewer(callerTaskId)
+        }
+        console.log("You are viewing Task Notes")
+    }
+}
+
+async function collapseThis(callerTaskId) {
+    // console.log("Time to close taskID", callerTaskId)
+    noteList = document.querySelector(`.e${callerTaskId}`).querySelector(".notes")
+    noteList.innerHTML = ""
+    document.querySelector(`.e${callerTaskId}`).querySelector(".notesFormDiv").innerHTML = ""
+}
+
+function displayNote(notesList, note) {
+    child = document.createElement('li')
+    child.className += "customListClass"
+    notesList.appendChild(child)
+    child.innerHTML = note['note']
+}
+
+async function addFormNoteViewer(callerTaskId) {
+    buttonElement = document.querySelector(`.e${callerTaskId}`).querySelector(".notesFormDiv")
+    buttonElement.innerHTML = noteForm
+    formButton = buttonElement.querySelector(".noteSubmitButton")
+    formButton.addEventListener("click", addNote)
+}
+
+async function addNote(e) {
+    noteForm = e.srcElement.parentNode
+    taskNode = e.path[5]
+    currentTaskID = taskNode.id
+    console.log(currentTaskID)
+
+    note = {
+        /* id: noteForm.querySelector('.noteId').value, */
+        note: noteForm.querySelector('.noteVerbose').value,
+        taskId: currentTaskID
+    }
+
+    resp = await fetch('/tasks/' + currentTaskID + '/notes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(note)
+    })
+
+    if (resp.status == 200) {
+        console.log('All good')
+    } else {
+        console.log('Some error')
+    }
+
+    taskItem = document.getElementById(currentTaskID)
+    notesList = taskItem.querySelector(".notes")
+    displayNote(notesList, note)
+}
+
+function Sort() {
+    preferenceNode = document.getElementById("sortingPreference")
+    console.log(preferenceNode)
+    preference = preferenceNode.value
+    callback = printViewTasks
+
+    if (preference == "dateASC") {
+        modeDateASC(callback)
+    } else if (preference == "priority") {
+        modePriority(callback)
+    } else if (preference == "status") {
+        modeStatus(callback)
+    } else if (preference == "dateDESC") {
+        modeDateDESC(callback)
+    }
+}
+
+function modeStatus(callback) {
+    l1 = listOfTasks.filter(function (i) {
+        if (i['status'] == "Completed") {
+            return i
+        }
+    })
+
+    listOfTasks = listOfTasks.filter(function (i) {
+        if (i['status'] == "Incomplete") {
+            return i
+        }
+    })
+    listOfTasks.push.apply(listOfTasks, l1)
+    callback()
+}
+
+function modePriority(callback) {
+    l1 = listOfTasks.filter(function (i) {
+        if (i['priority'] == "Medium") {
+            return i
+        }
+    })
+    listOfTasks.push.apply(listOfTasks, l1)
+
+    l2 = listOfTasks.filter(function (i) {
+        if (i['priority'] == "Low") {
+            return i
+        }
+    })
+
+    listOfTasks = listOfTasks.filter(function (i) {
+        if (i['priority'] == "High") {
+            return i
+        }
+    })
+    listOfTasks.push.apply(listOfTasks, l1)
+    listOfTasks.push.apply(listOfTasks, l2)
+    callback()
+}
+
+function modeDateDESC(callback) {
+    function GetSortOrder(prop) {
+        return function (a, b) {
+            if (new Date(a[prop]) < new Date(b[prop])) {
+                return 1;
+            } else if (new Date(a[prop]) > new Date(b[prop])) {
+                return -1;
+            }
+            return 0;
+        }
+    }
+    listOfTasks.sort(GetSortOrder("due"))
+    callback()
+}
+
+function modeDateASC(callback) {
+    function Order(prop) {
+        return function (a, b) {
+            if (new Date(a[prop]) < new Date(b[prop])) {
+                return -1;
+            } else if (new Date(a[prop]) > new Date(b[prop])) {
+                return 1;
+            }
+            return 0;
+        }
+    }
+    listOfTasks.sort(Order("due"))
+    callback()
+}
+
+async function addTask() {
     const allInputs = document.querySelectorAll(".formInput")
     let task = {}
-    allInputs.forEach(el=>{
+    allInputs.forEach(el => {
         task[el.id] = el.value
     })
 
-    resp = await fetch ('/tasks', {
+    resp = await fetch('/tasks', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -28,115 +250,46 @@ async function addTask () {
         console.error('Some problem ocurred')
     }
 
-    fetchAll()
+    // await globalListOfTasks.push(task)
+    // list.innerHTML = ""
+    printView(task, listOfTasks.length + 1)
 }
 
-async function viewTaskList (listOfTasks) {
-     let element = document.createElement('li')
-     element.setAttribute('id', listOfTasks['id'])
+async function updateTask() {
+    tID = document.getElementById("idToUpdate").value
 
-     if (todoElement == null || addNoteForm == null) {
-        todoElement = await fetch("/todoElement.html").then(res=>res.text())
-        addNoteForm = await fetch("/addNoteFormElement.html").then(res=>res.text())
-    }
-    element.innerHTML = todoElement
-    element.addEventListener("click", displayNotes)
-   //  element.addEventListener("click", displayNotes, true)
-    list.appendChild(element)
-    element.querySelector(".title").innerHTML = listOfTasks['id']
-    element.querySelector(".body").innerHTML = listOfTasks['description'] 
-}
+    priorityByUser = document.getElementById("priorityToUpdate").value
+    dueByUser = document.getElementById("dueToUpdate").value
+    statusByUser = document.getElementById("statusToUpdate").value
 
- async function displayNotes (e) {
-    thisId = (this.id).trim()
-    res = await fetch(`tasks/${thisId}/notes`, {method: 'GET'})
-    notesArray = await res.json()
+    currentDetailsOnId = listOfTasks[tID - 1]
+    await console.log("current details", currentDetailsOnId)
 
-    currentTaskID = thisId
-    taskItem = document.getElementById(thisId)
+    currentDetailsOnId.status = statusByUser
+    currentDetailsOnId.priority = priorityByUser
+    currentDetailsOnId.due = dueByUser
 
-    div2 = document.createElement("div")
-    div2.innerHTML = addNoteForm
-    await taskItem.appendChild(div2)
+    console.log("to modify as", currentDetailsOnId)
 
-    targets = ['#noteId', '#noteVerbose']
-    targets.forEach(i=>{
-        document.querySelector('#noteId').addEventListener(
-            'click',
-            function(event) {
-              console.log('propagation stopped');
-              event.stopPropagation();
+    try {
+        resp = await fetch('/tasks/' + currentDetailsOnId.id, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
             },
-            true // Add listener to *capturing* phase
-          );
-    })
-    
-    notesList = taskItem.querySelector(".notes")
-    formButton = div2.querySelector("#noteSubmitButton")
-    formButton.addEventListener("click", addNote)
+            body: JSON.stringify(currentDetailsOnId)
+        })
 
-    if (notesArray.length == 0) {
-        console.log("No notes")
-        return
+    } catch (err) {
+        console.log(err)
+    }
+
+    if (res.status == 200) {
+        listOfTasks = []
+        fetchAll()
     } else {
-        notesList.innerHTML = ""
-        await notesArray.forEach(element => {
-        console.log("ading a note with value ",element)
-        displayNote(notesList, element)
-    });
-    }
-}
-
- function displayNote (notesList, note) {
-    child = document.createElement('li')
-    notesList.appendChild(child)
-    child.innerHTML = note['note']
-}
-
-async function addNote (e) {
-    console.log("We are here in addNote()")
-
-    if (!e) var e = window.event;
-	e.cancelBubble = true;
-    if (e.stopPropagation) e.stopPropagation();
-    
-    taskItem = document.getElementById(currentTaskID)
-    noteForm = taskItem.querySelector("#addNote")
-
-    note = {
-        id: noteForm.querySelector('#noteId').value,
-        note: noteForm.querySelector('#noteVerbose').value,
-        taskId: currentTaskID
-    }
-    
-    resp = await fetch ('/tasks/'+currentTaskID+'/notes', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(note)
-    })
-
-    if (resp.status == 200) {
-        console.log('All good')
-    } else {
-        console.log('Some error')
-    }
-    console.log(this)
-    taskItem = document.getElementById(currentTaskID)
-    notesList = taskItem.querySelector(".notes")
-     displayNote(notesList, note)
-}
-
-async function fetchAll () {
-    resp = await fetch ('/tasks', {method: 'GET'})
-    data = await resp.json()
-    console.log("respone is ", data)
-
-    for (let index = 0; index < data.length; index++) {
-        viewTaskList (data[index])
-        listOfTodos.push(data[index])
+        console.log("error on server side", res)
     }
 
-    console.log("list of todos - > ", listOfTodos)
+
 }

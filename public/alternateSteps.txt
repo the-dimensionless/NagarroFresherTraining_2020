@@ -63,6 +63,23 @@ async function addTask () {
 
 */
 
+/*
+function printView(i) {
+    /* listOfTasks.forEach(i=>{
+        let task = document.createElement('li')
+        task.setAttribute('id', i['id'])
+        task.innerHTML = notesSection
+        task.addEventListener("onclick", displayNotesOnThis)
+        list.appendChild(task)
+
+        task.querySelector(".title").innerHTML = "Title : "+i['title']
+        task.querySelector(".description").innerHTML = "Description : "+i['description']
+        task.querySelector(".due").innerHTML = "Due Date : "+i['due'].substr(0,10)
+        task.querySelector(".priority").innerHTML = "Priority : "+i['priority']
+        task.querySelector(".status").innerHTML = "Status : "+i['status']
+    }) */
+*/
+
 
 
 
