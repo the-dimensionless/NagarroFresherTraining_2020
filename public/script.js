@@ -253,6 +253,12 @@ async function addTask() {
     // await globalListOfTasks.push(task)
     // list.innerHTML = ""
     printView(task, listOfTasks.length + 1)
+    collapseAllView()
+}
+
+function collapseAllView() {
+    document.getElementById("AddtaskForm").style.display = "none"
+    document.getElementById("UpdatetaskForm").style.display = "none"
 }
 
 async function updateTask() {
@@ -263,14 +269,18 @@ async function updateTask() {
     statusByUser = document.getElementById("statusToUpdate").value
 
     currentDetailsOnId = listOfTasks[tID - 1]
-    await console.log("current details", currentDetailsOnId)
+    // await console.log("current details", currentDetailsOnId)
 
-    currentDetailsOnId.status = statusByUser
-    currentDetailsOnId.priority = priorityByUser
-    currentDetailsOnId.due = dueByUser
-
-    console.log("to modify as", currentDetailsOnId)
-
+    if (statusByUser != "") {
+        currentDetailsOnId.status = statusByUser
+    }
+    if (priorityByUser != "") {
+        currentDetailsOnId.priority = priorityByUser
+    }
+    if (dueByUser != "") {
+        currentDetailsOnId.due = dueByUser
+    }
+    // console.log("to modify as", currentDetailsOnId)
     try {
         resp = await fetch('/tasks/' + currentDetailsOnId.id, {
             method: 'PATCH',
@@ -290,6 +300,5 @@ async function updateTask() {
     } else {
         console.log("error on server side", res)
     }
-
-
+    collapseAllView()
 }

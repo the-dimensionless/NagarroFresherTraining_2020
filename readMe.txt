@@ -47,11 +47,3 @@ GET        /todos/4 – details of todo with id = 4
 PATCH /todos/4 – update details of todo with id = 4 
 GET        /todos/4/notes – get list of all notes under todo with id = 4 
 POST     /todos/4/notes – add a new note under todo with id = 4
-
-Submission 
-Create a git repo to start work on this project
-Make well-described git commits. Marks will be deducted for git commit messages that make no sense 
-Host the site via Heroku 
-You can commit a sample todos.db file in the code, so when project is deployed, it already has some data
-Submit project via this form https://cb.lk/2GR-s 
-Submission deadline is Wed 15th Apr – 11:59PM

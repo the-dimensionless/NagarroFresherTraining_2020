@@ -20,15 +20,18 @@
     <div>
         <button type="button" class="btn btn-outline-dark" onclick=showAddTaskForm()>I want to Add a Task</button>
         <button type="button" class="btn btn-outline-dark" onclick=showUpdateTaskForm()>I want to Update a Task</button>
+        <button type="button" class="btn btn-outline-dark" onclick=collapseAllView()>Collapse View</button>
     </div>
     <br>
     <div id="AddtaskForm" class="form-group border border-secondary">
         <fieldset>
             <legend class='btn btn-secondary'>Add a Task</legend><br>
-            <input type="text" name="task" id="id" placeholder="Enter Task Id" class="formInput form-control"
+            <!--  <input type="text" name="task" id="id" placeholder="Enter Task Id" class="formInput form-control"
+                required><br> -->
+            <label>Enter title</label>
+            <input type="textbox" name="title" id="title" placeholder="Enter Task Title" class="formInput form-control"
                 required><br>
-            <input type="text" name="title" id="title" placeholder="Enter Task Title" class="formInput form-control"
-                required><br>
+            <label>Enter Description</label>
             <input type="text" name="description" id="description" placeholder="Enter Task description"
                 class="formInput form-control"><br>
             <p>Due Date:&nbsp;<input type="date" name="due" id="due" class="formInput form-control"></p>
