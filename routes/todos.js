@@ -54,6 +54,7 @@ route.patch('/:id', async (req, res) => {
         }
     })
     res.status(200).send({ success: 'Task Details Updated' })
+
 })
 
 // GET Request for Notes under given TaskId
