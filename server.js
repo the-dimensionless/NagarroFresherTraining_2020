@@ -3,7 +3,7 @@ const express = require('express')
 const { db } = require('./database/db')
 const routingService = require('./routes/todos')
 
-const port = process.env.PORT || 6543
+port = process.env.PORT || 6543
 const app = express()
 
 app.use(express.urlencoded({ extended: true }))
