@@ -15,7 +15,10 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "sqlite3": "^4.1.1"
+    "sqlite3": "^4.1.1",
+    "sequelize": "5.21.5",
+    "bootstrap": "^4.1.1",
+    "popper.js": "^1.14.3"
   },
   "engines": {
     "node": "^13.9.0",
